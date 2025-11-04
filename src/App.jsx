@@ -1,28 +1,37 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react';
+import Navbar from './components/Navbar.jsx';
+import HomePage from './components/HomePage.jsx';
+import TripsPage from './components/TripsPage.jsx';
+import ProfilePage from './components/ProfilePage.jsx';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [route, setRoute] = useState('home');
+
+  const CurrentPage = useMemo(() => {
+    switch (route) {
+      case 'home':
+        return (
+          <HomePage onPlanTrip={() => setRoute('trips')} />
+        );
+      case 'trips':
+        return <TripsPage />;
+      case 'profile':
+        return <ProfilePage />;
+      default:
+        return <HomePage onPlanTrip={() => setRoute('trips')} />;
+    }
+  }, [route]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
+    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+      <Navbar current={route} onNavigate={setRoute} />
+      <main className="pt-16">{CurrentPage}</main>
+      <footer className="border-t border-neutral-800/60 bg-neutral-950/70 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/50">
+        <div className="mx-auto max-w-7xl px-6 py-6 text-sm text-neutral-400 flex flex-col md:flex-row items-center justify-between gap-3">
+          <p>© {new Date().getFullYear()} Wayfinder. All rights reserved.</p>
+          <p className="opacity-80">Built with a modern, interactive travel aesthetic.</p>
         </div>
-      </div>
+      </footer>
     </div>
-  )
+  );
 }
-
-export default App
